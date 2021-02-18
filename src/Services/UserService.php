@@ -31,10 +31,11 @@ class UserService
      */
     public function handleCreate(User $user)
     {
+        $password = $this->passwordEncoder->encodePassword($user, $user->getPassword());
+        $user->setPassword($password);
         $user->setRoles(["ROLE_USER"]);
         $user->setActive();
         $this->userRepository->setCreate($user);
-
         return $this;
     }
 
@@ -44,10 +45,34 @@ class UserService
      */
     public function handleUpdate(User $user)
     {
-        //$password = $this->passwordEncoder->encodePassword($user, $user->getPlainPassword());
-        //$user->setPassword($password);
+        $password = $this->passwordEncoder->encodePassword($user, $user->getPassword());
+        $user->setPassword($password);
         $this->userRepository->setSave($user);
-
         return $this;
+    }
+
+    public function banUser(User $user)
+    {
+        $user->setBan();
+        $this->userRepository->setSave($user);
+        return $this;
+    }
+
+    public function unbanUser(User $user)
+    {
+        $user->setActive();
+        $this->userRepository->setSave($user);
+        return $this;
+    }
+
+    public function sendEmail(MailerInterface $mailer)
+    {
+        $email = (new Email())
+            ->from('pavlyukkonstantin85@gmail.com')
+            ->to('pavlyukkonstantin85@gmail.com')
+            ->subject('Time for Symfony Mailer!')
+            ->text('Sending emails is fun again!')
+            ->html('<p>See Twig integration for better HTML integration!</p>');
+        $mailer->send($email);
     }
 }

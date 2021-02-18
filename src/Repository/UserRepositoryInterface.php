@@ -30,4 +30,5 @@ interface UserRepositoryInterface
      * @return User[]
      */
     public function getAll(): array;
+
 }

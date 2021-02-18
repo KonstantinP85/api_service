@@ -133,4 +133,9 @@ class User implements UserInterface
     {
         $this->is_ban = self::BAN;
     }
+
+    public function getStatus(): bool
+    {
+        return (bool) $this->is_ban;
+    }
 }
