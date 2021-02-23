@@ -12,6 +12,7 @@ use Symfony\Component\HttpFoundation\RedirectResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
+use Symfony\Component\Mailer\MailerInterface;
 use Symfony\Component\Routing\Annotation\Route;
 
 class UserController extends BaseController
@@ -106,30 +107,34 @@ class UserController extends BaseController
     /** Ban on posting comments
      * @Route ("api/admin/user/{id}/ban", name="user_ban")
      * @param Request $request
+     * @param MailerInterface $mailer
      * @return Response
      */
-    public function banUserAction(Request $request)
+    public function banUserAction(Request $request, MailerInterface $mailer)
     {
         $user = $this->userRepository->getOne($request->get('id'));
         if(!$user) {
             throw new NotFoundHttpException('User not found');
         }
         $this->userService->banUser($user);
+        $this->userService->sendEmail($mailer, 'Sorry, you are banned', $user->getEmail());
         return $this->respond($user);
     }
 
     /** Removed the ban on posting comments
      * @Route ("api/admin/user/{id}/unban", name="user_unban")
      * @param Request $request
+     * @param MailerInterface $mailer
      * @return Response
      */
-    public function unbanUserAction(Request $request)
+    public function unbanUserAction(Request $request, MailerInterface $mailer)
     {
         $user = $this->userRepository->getOne($request->get('id'));
         if(!$user) {
             throw new NotFoundHttpException('User not found');
         }
         $this->userService->unbanUser($user);
+        $this->userService->sendEmail($mailer, 'Congratulations,you were unbanned', $user->getEmail());
         return $this->respond($user);
     }
 
