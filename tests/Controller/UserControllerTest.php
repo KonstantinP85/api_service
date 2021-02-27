@@ -18,4 +18,17 @@ class UserControllerTest extends TestController
         $this->assertNotEmpty($responseDecode);
         $this->assertJson($responseContent);
     }
+
+    public function testEmailSent()
+    {
+        $client = static ::createClient();
+        $client->request('GET', 'api/admin/user/2/ban');
+
+        $sentMail = $this->getMailerMessage(0);
+        $this->assertEmailCount(1);
+        $this->assertEmailHeaderSame($sentMail, 'to', 'mikemikelson@test.ru');
+        $this->assertEmailHtmlBodyContains($sentMail, 'Some HTML');
+        //$this->assertEmailAttachmentCount($sentMail, 1);
+    }
+
 }

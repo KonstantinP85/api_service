@@ -31,4 +31,15 @@ interface UserRepositoryInterface
      */
     public function getAll(): array;
 
+    /**
+     * @param User $user
+     * @return object
+     */
+    public function setUpdateUser(User $user): object;
+
+    /**
+     * @param User $user
+     */
+    public function setDeleteUser(User $user);
+
 }

@@ -11,7 +11,6 @@ use App\Services\UserService;
 use Symfony\Component\HttpFoundation\RedirectResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
-use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 use Symfony\Component\Mailer\MailerInterface;
 use Symfony\Component\Routing\Annotation\Route;
 
@@ -76,10 +75,7 @@ class UserController extends BaseController
      */
     public function updateUserAction(Request $request)
     {
-        $user = $this->userRepository->getOne($request->get('id'));
-        if(!$user) {
-            throw new NotFoundHttpException('User not found');
-        }
+        $user=$this->userService->getUser($request->get('id'));
         $form = $this->createForm(UserType::class, $user);
         $form->submit($request->request->all());
         if (!$form->isValid()) {
@@ -96,10 +92,7 @@ class UserController extends BaseController
      */
     public function deleteUserAction(Request $request)
     {
-        $user = $this->userRepository->getOne($request->get('id'));
-        if(!$user) {
-            throw new NotFoundHttpException('User not found');
-        }
+        $user=$this->userService->getUser($request->get('id'));
         $this->userRepository->setDeleteUser($user);
         return $this->respond(null);
     }
@@ -112,10 +105,7 @@ class UserController extends BaseController
      */
     public function banUserAction(Request $request, MailerInterface $mailer)
     {
-        $user = $this->userRepository->getOne($request->get('id'));
-        if(!$user) {
-            throw new NotFoundHttpException('User not found');
-        }
+        $user=$this->userService->getUser($request->get('id'));
         $this->userService->banUser($user);
         $this->userService->sendEmail($mailer, 'Sorry, you are banned', $user->getEmail());
         return $this->respond($user);
@@ -129,10 +119,7 @@ class UserController extends BaseController
      */
     public function unbanUserAction(Request $request, MailerInterface $mailer)
     {
-        $user = $this->userRepository->getOne($request->get('id'));
-        if(!$user) {
-            throw new NotFoundHttpException('User not found');
-        }
+        $user=$this->userService->getUser($request->get('id'));
         $this->userService->unbanUser($user);
         $this->userService->sendEmail($mailer, 'Congratulations,you were unbanned', $user->getEmail());
         return $this->respond($user);

@@ -6,6 +6,7 @@ namespace App\Services;
 
 use App\Entity\User;
 use App\Repository\UserRepositoryInterface;
+use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 use Symfony\Component\Mailer\MailerInterface;
 use Symfony\Component\Mime\Email;
 use Symfony\Component\Security\Core\Encoder\UserPasswordEncoderInterface;
@@ -59,6 +60,23 @@ class UserService
         return $this;
     }
 
+    /**
+     * @param $id
+     * @return User|object
+     */
+    public function getUser($id)
+    {
+        $user = $this->userRepository->getOne($id);
+        if(!$user) {
+            throw new NotFoundHttpException('User not found');
+        }
+        return $user;
+    }
+
+    /**
+     * @param User $user
+     * @return $this
+     */
     public function banUser(User $user)
     {
         $user->setBan();
@@ -66,6 +84,10 @@ class UserService
         return $this;
     }
 
+    /**
+     * @param User $user
+     * @return $this
+     */
     public function unbanUser(User $user)
     {
         $user->setActive();
