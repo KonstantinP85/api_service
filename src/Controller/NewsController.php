@@ -41,6 +41,7 @@ class NewsController extends BaseController
     public function showOneNewsAction(Request $request)
     {
         $news = $this->newsRepository->getOne($request->get('id'));
+
         return $this->respond($news);
     }
 
@@ -49,7 +50,7 @@ class NewsController extends BaseController
      * @param Request $request
      * @return RedirectResponse|Response
      */
-    public function createUserAction(Request $request)
+    public function createNewsAction(Request $request)
     {
         $news= new News();
         $form = $this->createForm(NewsType::class, $news);

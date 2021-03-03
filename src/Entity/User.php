@@ -45,17 +45,7 @@ class User implements UserInterface
      */
     private $is_ban;
 
-    /**
-     * @ORM\OneToMany(targetEntity=FirstComment::class, mappedBy="user")
-     */
-    private $firstComments;
-
-    public function __construct()
-    {
-        $this->firstComments = new ArrayCollection();
-    }
-
-    public function getId(): ?int
+   public function getId(): ?int
     {
         return $this->id;
     }
@@ -151,30 +141,4 @@ class User implements UserInterface
         return (bool) $this->is_ban;
     }
 
-    /**
-     * @return Collection|FirstComment[]
-     */
-    public function getFirstComments(): Collection
-    {
-        return $this->firstComments;
-    }
-
-    public function addFirstComment(FirstComment $firstComment): self
-    {
-        if (!$this->firstComments->contains($firstComment)) {
-            $this->firstComments[] = $firstComment;
-            $firstComment->addUser($this);
-        }
-
-        return $this;
-    }
-
-    public function removeFirstComment(FirstComment $firstComment): self
-    {
-        if ($this->firstComments->removeElement($firstComment)) {
-            $firstComment->removeUser($this);
-        }
-
-        return $this;
-    }
 }
