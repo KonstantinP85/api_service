@@ -5,6 +5,7 @@ namespace App\Controller;
 
 
 use App\Entity\News;
+use App\Form\NewsType;
 use App\Repository\NewsRepositoryInterface;
 use Symfony\Component\HttpFoundation\RedirectResponse;
 use Symfony\Component\HttpFoundation\Request;
@@ -44,7 +45,7 @@ class NewsController extends BaseController
     }
 
     /**
-     * @Route("api/admin/news/create", name="user_create")
+     * @Route ("api/admin/news/create", name="news_create")
      * @param Request $request
      * @return RedirectResponse|Response
      */
@@ -57,8 +58,7 @@ class NewsController extends BaseController
         {
             return $this->respond($form, Response::HTTP_BAD_REQUEST);
         }
-        $this->getDoctrine()->getManager()->persist($news);
-        $this->getDoctrine()->getManager()->flush();
+        $this->newsRepository->setCreate($news);
         return $this->respond($news);
     }
 

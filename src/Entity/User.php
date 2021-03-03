@@ -3,6 +3,8 @@
 namespace App\Entity;
 
 use App\Repository\UserRepository;
+use Doctrine\Common\Collections\ArrayCollection;
+use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
 use Symfony\Component\Security\Core\User\UserInterface;
 
@@ -42,6 +44,16 @@ class User implements UserInterface
      * @ORM\Column(type="boolean")
      */
     private $is_ban;
+
+    /**
+     * @ORM\OneToMany(targetEntity=FirstComment::class, mappedBy="user")
+     */
+    private $firstComments;
+
+    public function __construct()
+    {
+        $this->firstComments = new ArrayCollection();
+    }
 
     public function getId(): ?int
     {
@@ -137,5 +149,32 @@ class User implements UserInterface
     public function getStatus(): bool
     {
         return (bool) $this->is_ban;
+    }
+
+    /**
+     * @return Collection|FirstComment[]
+     */
+    public function getFirstComments(): Collection
+    {
+        return $this->firstComments;
+    }
+
+    public function addFirstComment(FirstComment $firstComment): self
+    {
+        if (!$this->firstComments->contains($firstComment)) {
+            $this->firstComments[] = $firstComment;
+            $firstComment->addUser($this);
+        }
+
+        return $this;
+    }
+
+    public function removeFirstComment(FirstComment $firstComment): self
+    {
+        if ($this->firstComments->removeElement($firstComment)) {
+            $firstComment->removeUser($this);
+        }
+
+        return $this;
     }
 }
